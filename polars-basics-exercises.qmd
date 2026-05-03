@@ -1,196 +1,103 @@
-# Ejercicios Básicos de Polars
+---
+title: "Ejercicios de Polars"
+author: "Mary Missed"
+date: "2026-05-03"
+format: 
+  html: 
+    toc: true
+    number-sections: true
+---
 
-Este documento contiene ejemplos de código utilizando la biblioteca Polars para los siguientes 10 ejercicios.
-
-## Ejercicio 1: Crear un DataFrame
+# Ejercicio 1: Cargar y visualizar un DataFrame
 
 ```python
 import polars as pl
 
-# Crear un DataFrame sencillo
-# Crear un DataFrame que contiene nombres y edades
-nombres = ['Alice', 'Bob', 'Charlie']
-edades = [25, 30, 35]
-df = pl.DataFrame({'Nombre': nombres, 'Edad': edades})
-
-# Mostrar el DataFrame
-print(df)  
-# Resultado:
-# shape: (3, 2)
-# ┌───────────┬─────┐
-# │ Nombre    ┆ Edad│
-# │ ---       ┆ --- │
-# │ str       ┆ i64 │
-# ╞═══════════╪═════╡
-# │ -----------┼─────│
-# │ ---       ┆ --- │
-# │ Alice    ┆ 25  │
-# │ Bob      ┆ 30  │
-# │ Charlie  ┆ 35  │
-# └───────────┴─────┘
-```
-
-
-## Ejercicio 2: Filtrar un DataFrame
-
-```python
-# Filtrar filas donde la edad es mayor a 28
-resultado = df.filter(pl.col('Edad') > 28)
-print(resultado)
-# Resultado:
-# shape: (2, 2)
-# ┌─────────┬─────┐
-# │ Nombre  ┆ Edad│
-# │ ---     ┆ --- │
-# │ str     ┆ i64 │
-# ╞═════════╪═════╡
-# │ ---------┼─────│
-# │ Bob     ┆ 30  │
-# │ Charlie ┆ 35  │
-# └─────────┴─────┘
-```
-
-
-## Ejercicio 3: Seleccionar columnas
-
-```python
-# Seleccionar solo la columna "Nombre"
-resultado = df.select('Nombre')
-print(resultado)
-# Resultado:
-# shape: (3, 1)
-# ┌───────────┐
-# │ Nombre    │
-# │ ---       │
-# │ str       │
-# ╞═══════════╡
-# │ -----------┼─────│
-# │ Alice    │
-# │ Bob      │
-# │ Charlie  │
-# └───────────┴─────┘
-```
-
-
-## Ejercicio 4: Agregar datos
-
-```python
-# Calcular la edad promedio
-edad_promedio = df['Edad'].mean()
-print(f'Edad Promedio: {edad_promedio}')
-# Resultado: Edad Promedio: 30.0
-```
-
-
-## Ejercicio 5: Agrupar datos
-
-```python
-# Agrupar por nombre y contar
-resultado = df.groupby('Nombre').agg(pl.count('Edad'))
-print(resultado)
-# Resultado:
-# shape: (3, 2)
-# ┌───────────┬───────┐
-# │ Nombre    ┆ count │
-# │ ---       ┆ ---   │
-# │ str       ┆ u32   │
-# ╞═══════════╪═══════╡
-# │ -----------┼───────│
-# │ Alice    ┆ 1     │
-# │ Bob      ┆ 1     │
-# │ Charlie  ┆ 1     │
-# └───────────┴───────┘
-```
-
-
-## Ejercicio 6: Ordenar datos
-
-```python
-# Ordenar por edad
-resultado = df.sort('Edad')
-print(resultado)
-# Resultado:
-# shape: (3, 2)
-# ┌───────────┬─────┐
-# │ Nombre    ┆ Edad│
-# │ ---       ┆ --- │
-# │ str       ┆ i64 │
-# ╞═══════════╪═════╡
-# │ -----------┼─────│
-# │ Alice    ┆ 25  │
-# │ Bob      ┆ 30  │
-# │ Charlie  ┆ 35  │
-# └───────────┴─────┘
-```
-
-
-## Ejercicio 7: Añadir nuevas columnas
-
-```python
-# Añadir una nueva columna "Edad en 5 años"
-df = df.with_columns((pl.col('Edad') + 5).alias('Edad en 5 años'))
+df = pl.read_csv("data.csv")
 print(df)
-# Resultado:
-# shape: (3, 3)
-# ┌───────────┬─────┬───────────────┐
-# │ Nombre    ┆ Edad│ Edad en 5 años │
-# │ ---       ┆ --- │ ---           │
-# │ str       ┆ i64 │ i64           │
-# ╞═══════════╪═════╪═══════════════╡
-# │ -----------┼─────┼───────────────│
-# │ Alice    ┆ 25  ┆ 30            │
-# │ Bob      ┆ 30  ┆ 35            │
-# │ Charlie  ┆ 35  ┆ 40            │
-# └───────────┴─────┴───────────────┘
 ```
 
+---
 
-## Ejercicio 8: Eliminar columnas
+# Ejercicio 2: Filtrar datos
 
 ```python
-# Eliminar la columna "Edad"
-df = df.drop('Edad')
+filtered_df = df.filter(pl.col("edad") > 30)
+print(filtered_df)
+```
+
+---
+
+# Ejercicio 3: Agrupar datos
+
+```python
+grouped_df = df.groupby("grupo").agg(pl.col("ventas").sum())
+print(grouped_df)
+```
+
+---
+
+# Ejercicio 4: Ordenar datos
+
+```python
+sorted_df = df.sort("ventas", reverse=True)
+print(sorted_df)
+```
+
+---
+
+# Ejercicio 5: Crear nuevas columnas
+
+```python
+df = df.with_columns((pl.col("ventas") * 1.1).alias("ventas_actualizadas"))
 print(df)
-# Resultado:
-# shape: (3, 2)
-# ┌───────────┬───────────────┐
-# │ Nombre    ┆ Edad en 5 años │
-# │ ---       ┆ ---           │
-# │ str       ┆ i64           │
-# ╞═══════════╪═══════════════╡
-# │ -----------┼───────────────│
-# │ Alice    ┆ 30            │
-# │ Bob      ┆ 35            │
-# │ Charlie  ┆ 40            │
-# └───────────┴───────────────┘
 ```
 
+---
 
-## Ejercicio 9: Renombrar columnas
+# Ejercicio 6: Manejar valores nulos
 
 ```python
-# Renombrar la columna "Nombre" a "Nombres"
-df = df.rename({'Nombre': 'Nombres'})
+df = df.fill_null(0)
 print(df)
-# Resultado:
-# shape: (3, 2)
-# ┌───────────┬───────────────┐
-# │ Nombres   ┆ Edad en 5 años │
-# │ ---       ┆ ---           │
-# │ str       ┆ i64           │
-# ╞═══════════╪═══════════════╡
-# │ -----------┼───────────────│
-# │ Alice    ┆ 30            │
-# │ Bob      ┆ 35            │
-# │ Charlie  ┆ 40            │
-# └───────────┴───────────────┘
 ```
 
+---
 
-## Ejercicio 10: Guardar DataFrame como CSV
+# Ejercicio 7: Unir DataFrames
 
 ```python
-# Guardar el DataFrame como CSV
-df.write_csv('salida.csv')
-# El archivo 'salida.csv' se ha creado con los datos del DataFrame.
+otros_df = pl.read_csv("otros_data.csv")
+df_combinado = df.hstack(otros_df)
+print(df_combinado)
+```
+
+---
+
+# Ejercicio 8: Aplicar funciones personalizadas
+
+```python
+def ajustar_ventas(venta):
+    return venta * 1.2
+
+df = df.with_columns(pl.col("ventas").apply(ajustar_ventas).alias("ventas_ajustadas"))
+print(df)
+```
+
+---
+
+# Ejercicio 9: Gráficos de datos
+
+```python
+import matplotlib.pyplot as plt
+df["ventas"].hist()
+plt.show()
+```
+
+---
+
+# Ejercicio 10: Exportar DataFrame
+
+```python
+df.write_csv("exportado.csv")
 ```
