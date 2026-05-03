@@ -1,103 +1,99 @@
 ---
 title: "Ejercicios de Polars"
-author: "Mary Missed"
-date: "2026-05-03"
+author: "Tu Nombre"
+date: 2026-05-03
 format: 
   html: 
-    toc: true
-    number-sections: true
+    code-fold: true
 ---
 
-# Ejercicio 1: Cargar y visualizar un DataFrame
+# Ejercicio 1: Leer un DataFrame
 
+Utiliza `polars.read_csv()` para leer un archivo CSV y crear un DataFrame.
 ```python
 import polars as pl
 
-df = pl.read_csv("data.csv")
+df = pl.read_csv("ruta/al/tu/archivo.csv")
 print(df)
 ```
-
----
+Explicación: `read_csv()` lee el archivo CSV en la ruta especificada y crea un DataFrame que puedes manipular.  
 
 # Ejercicio 2: Filtrar datos
 
+Filtra el DataFrame para obtener solo las filas que cumplen una condición específica.
 ```python
-filtered_df = df.filter(pl.col("edad") > 30)
-print(filtered_df)
+resultado = df.filter(pl.col("columna") > valor)
+print(resultado)
 ```
+Explicación: `filter()` permite seleccionar filas según una condición. En este caso, se seleccionan filas donde el valor de "columna" es mayor que "valor".
 
----
+# Ejercicio 3: Seleccionar columnas
 
-# Ejercicio 3: Agrupar datos
-
+Selecciona columnas específicas de un DataFrame.
 ```python
-grouped_df = df.groupby("grupo").agg(pl.col("ventas").sum())
-print(grouped_df)
+nuevodf = df.select(["columna1", "columna2"])
+print(nuevodf)
 ```
+Explicación: `select()` se utiliza para escoger columnas específicas. Aquí se seleccionan "columna1" y "columna2" para un nuevo DataFrame.
 
----
+# Ejercicio 4: Agrupar datos
 
-# Ejercicio 4: Ordenar datos
-
+Agrupa los datos y calcula estadísticas.
 ```python
-sorted_df = df.sort("ventas", reverse=True)
-print(sorted_df)
+agrupado = df.groupby("columna").agg(pl.col("otra_columna").mean())
+print(agrupado)
 ```
-
----
+Explicación: `groupby()` permite agrupar los datos según una columna y `agg()` se usa para aplicar funciones agregadas como `mean()`.
 
 # Ejercicio 5: Crear nuevas columnas
 
+Agrega nuevas columnas a un DataFrame basado en cálculos.
 ```python
-df = df.with_columns((pl.col("ventas") * 1.1).alias("ventas_actualizadas"))
+df = df.with_column((pl.col("columna1") + pl.col("columna2")).alias("suma"))
 print(df)
 ```
+Explicación: `with_column()` se usa para agregar una nueva columna que es el resultado de sumar "columna1" y "columna2".
 
----
+# Ejercicio 6: Ordenar datos
 
-# Ejercicio 6: Manejar valores nulos
-
+Ordena el DataFrame según una columna específica.
 ```python
-df = df.fill_null(0)
+df = df.sort("columna")
 print(df)
 ```
+Explicación: `sort()` organiza las filas del DataFrame en orden ascendente según los valores de "columna".
 
----
+# Ejercicio 7: Eliminar columnas
 
-# Ejercicio 7: Unir DataFrames
-
+Elimina columnas innecesarias del DataFrame.
 ```python
-otros_df = pl.read_csv("otros_data.csv")
-df_combinado = df.hstack(otros_df)
+df = df.drop("columna_a_eliminar")
+print(df)
+```
+Explicación: `drop()` se utiliza para quitar columnas específicas del DataFrame.
+
+# Ejercicio 8: Unir DataFrames
+
+Combina dos DataFrames en uno solo.
+```python
+df_combinado = df1.join(df2, on="columna_comun")
 print(df_combinado)
 ```
+Explicación: `join()` permite fusionar DataFrames basándose en una columna común.
 
----
+# Ejercicio 9: Guardar un DataFrame
 
-# Ejercicio 8: Aplicar funciones personalizadas
-
+Guarda un DataFrame en un nuevo archivo CSV.
 ```python
-def ajustar_ventas(venta):
-    return venta * 1.2
-
-df = df.with_columns(pl.col("ventas").apply(ajustar_ventas).alias("ventas_ajustadas"))
-print(df)
+df.write_csv("ruta/al/tu/nuevo_archivo.csv")
 ```
+Explicación: `write_csv()` se encarga de escribir los datos del DataFrame en un nuevo archivo en la ruta especificada.
 
----
+# Ejercicio 10: Describir un DataFrame
 
-# Ejercicio 9: Gráficos de datos
-
+Obtén estadísticas descriptivas de un DataFrame.
 ```python
-import matplotlib.pyplot as plt
-df["ventas"].hist()
-plt.show()
+descripcion = df.describe()
+print(descripcion)
 ```
-
----
-
-# Ejercicio 10: Exportar DataFrame
-
-```python
-df.write_csv("exportado.csv")
-```
+Explicación: `describe()` proporciona un resumen estadístico de los datos en el DataFrame, incluyendo conteos, medias y desviaciones estándar.
